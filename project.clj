@@ -6,7 +6,6 @@
                  [org.jruby/jruby-complete "1.6.7.2"]
                  [chee "1.1.2"]]
   :profiles {:dev {:dependencies [[speclj "2.5.0"]]}}
-  :main sass-clj.core
   :plugins [[speclj "2.5.0"]]
   :test-paths ["spec"]
   :resource-paths ["resources"])
