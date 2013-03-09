@@ -1,5 +1,5 @@
-(defproject sass-clj "0.1.0"
-  :description "SASS for Clojure"
+(defproject sass "3.2.6"
+  :description "The Sass compiler"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.0"]
