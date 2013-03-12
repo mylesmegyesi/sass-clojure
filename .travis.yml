@@ -1,0 +1,5 @@
+lein: lein2
+
+script:
+  - lein spec
+  - lein with-profile dev uberjar && java -jar target/sass-3.2.6-standalone.jar
