@@ -1,44 +1,41 @@
 (ns sass.core
-  (:require [chee.string :refer [snake-case]]
+  (:require [clojure.java.io :refer [resource]]
+            [clojure.string :refer [split]]
+            [clojure.walk :refer [postwalk]]
+            [chee.string :refer [snake-case]]
             [chee.coerce :refer [->string ->keyword]]
-            [sass.ruby :refer [run-ruby ->ruby]]))
+            [zweikopf.core :refer :all]))
 
-(defn- underscore [k]
+(defn- underscore-key [k]
   (->keyword (snake-case (->string k))))
 
-(defn- underscore-map [m]
-  (reduce
-    (fn [underscored [k v]]
-      (assoc underscored (underscore k) v))
-    {}
-    m))
+(defn- underscore-keys [m]
+  (let [f (fn [[k v]] [(underscore-key k) v])]
+    (postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
-(defn- ->sass-engine-options [options]
-  (->ruby
-    (underscore-map options)))
+(defn- new-sass-engine [template-string options]
+  (call-ruby "Sass::Engine" :new (rubyize template-string) (rubyize options)))
 
-(defn render-file-path [options file-path]
-  (let [options (->sass-engine-options options)]
-    (str
-      (run-ruby
-        (str "Sass::Engine.for_file(" (->ruby file-path) ", " options ").render")))))
+(defn- new-sass-engine-for-file [file-path options]
+  (call-ruby "Sass::Engine" :for_file (rubyize file-path) (rubyize options)))
 
-(defn render-string [options string]
-  (let [options (->sass-engine-options options)]
-    (str
-      (run-ruby
-        (str "Sass::Engine.new(" (->ruby string) ", " options ").render")))))
+(defn render-file-path [file-path options]
+  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys options)) render)))
 
-(defn- resource-path [resource]
-  (.getPath (clojure.java.io/resource resource)))
+(defn render-string [string options]
+  (clojurize (call-ruby (new-sass-engine string (underscore-keys options)) render)))
 
-(defn render-resource-path [options path]
-  (render-file-path options (resource-path path)))
+(defn- resource-path [path]
+  (.getPath (resource path)))
+
+(defn render-resource-path [path options]
+  (render-file-path (resource-path path) options))
+
+(defn- append-to-load-path! [path]
+  (ruby-eval (str "$: << \"" path "\"")))
 
 (defn- init-sass []
-  (let [sass-lib-path (first (clojure.string/split (.getPath (clojure.java.io/resource "gems/sass-3.2.6/lib/sass.rb")) #"/sass.rb" 2))]
-    (run-ruby
-      (str "$: << \"" sass-lib-path "\"")
-      "require 'sass'")))
+  (ruby-require (.getPath (resource "sass-3.2.6/lib/sass.rb"))))
 
+(init-ruby-context)
 (init-sass)
