@@ -31,9 +31,6 @@
 (defn render-resource-path [path options]
   (render-file-path (resource-path path) options))
 
-(defn- append-to-load-path! [path]
-  (ruby-eval (str "$: << \"" path "\"")))
-
 (defn- init-sass []
   (ruby-require (.getPath (resource "sass-3.2.6/lib/sass.rb"))))
 
