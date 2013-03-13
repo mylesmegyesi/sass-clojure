@@ -7,6 +7,14 @@ Clojure bindings for the Ruby Sass compiler
 
 This should only be used as a development dependency. This library depends on JRuby, which means you would too.
 
+## Installation
+
+Add this to your project.clj
+
+``` clojure
+[sass "3.2.6"]
+```
+
 ## Usage
 
 To render a file
