@@ -12,18 +12,30 @@ This should only be used as a development dependency. This library depends on JR
 To render a file
 
 ``` clojure
-(render-file-path {} "public/test.scss")
+; using default options
+(render-file-path "public/test.scss")
+
+; with options
+(render-file-path "public/test.scss" :property-syntax :new :style :compressed)
 ```
 
 To render a resource
 
 ``` clojure
-(render-resource-path {} "test.scss")
+; using default options
+(render-resource-path "test.scss")
+
+; with options
+(render-file-path "test.scss" :load-paths ["src/stylesheets"])
 ```
 
 Rendering a string
 
 ``` clojure
-(render-string {:style :compressed :syntax :scss} "$blue: #3bbfce; .content-navigation { border-color: $blue; }")
+; using default options
+(render-string "$blue: #3bbfce; .content-navigation { border-color: $blue; }")
 ; ".content-navigation{border-color:#3bbfce}"
+
+; with options
+(render-string "$blue: #3bbfce; .content-navigation { border-color: $blue; }" :style :compressed :syntax :scss)
 ```

@@ -6,6 +6,15 @@
             [chee.coerce :refer [->string ->keyword]]
             [zweikopf.core :refer :all]))
 
+(defn- init-sass []
+  (ruby-require (.getPath (resource "sass-3.2.6/lib/sass.rb"))))
+
+(init-ruby-context)
+(init-sass)
+
+(defn- resource-path [path]
+  (.getPath (resource path)))
+
 (defn- underscore-key [k]
   (->keyword (snake-case (->string k))))
 
@@ -19,20 +28,12 @@
 (defn- new-sass-engine-for-file [file-path options]
   (call-ruby "Sass::Engine" :for_file (rubyize file-path) (rubyize options)))
 
-(defn render-file-path [file-path options]
-  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys options)) render)))
+(defn render-file-path [file-path & {:as options}]
+  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys (or options {}))) render)))
 
-(defn render-string [string options]
-  (clojurize (call-ruby (new-sass-engine string (underscore-keys options)) render)))
+(defn render-string [string & {:as options}]
+  (clojurize (call-ruby (new-sass-engine string (underscore-keys (or options {}))) render)))
 
-(defn- resource-path [path]
-  (.getPath (resource path)))
+(defn render-resource-path [path & options]
+  (apply render-file-path (resource-path path) options))
 
-(defn render-resource-path [path options]
-  (render-file-path (resource-path path) options))
-
-(defn- init-sass []
-  (ruby-require (.getPath (resource "sass-3.2.6/lib/sass.rb"))))
-
-(init-ruby-context)
-(init-sass)

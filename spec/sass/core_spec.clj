@@ -21,7 +21,7 @@
   margin: 8px;
   border-color: #3bbfce; }
 "
-      (render-file-path "test_fixtures/test.scss" {})))
+      (render-file-path "test_fixtures/test.scss")))
 
   (it "renders a file with a resource path"
     (should=
@@ -34,7 +34,7 @@
   margin: 8px;
   border-color: #3bbfce; }
 "
-      (render-resource-path "test.scss" {})))
+      (render-resource-path "test.scss")))
 
   (it "renders a scss file that has an import to another scss file"
     (let [scss-file "scss/test1.scss"
@@ -46,7 +46,7 @@
 .test1 {
   border-color: blue; }
 "
-        (render-file-path file-path {:load-paths [(base-dir file-path scss-file)]}))))
+        (render-file-path file-path :load-paths [(base-dir file-path scss-file)]))))
 
   (it "renders a sass file with a file path"
     (should=
@@ -59,7 +59,7 @@
   margin: 8px;
   border-color: #3bbfce; }
 "
-      (render-file-path (resource-path "test.sass") {})))
+      (render-file-path (resource-path "test.sass"))))
 
   (context "options"
 
@@ -72,7 +72,7 @@
 .content-navigation {
   border-color: $blue; }
 "
-          {:style :compressed :syntax :scss})))
+          :style :compressed :syntax :scss)))
 
     (it "syntax"
       (should=
@@ -84,7 +84,7 @@
 .content-navigation
   border-color: $blue
 "
-          {:syntax :sass})))
+          :syntax :sass)))
 
     (it "property syntax"
       (should=
@@ -96,7 +96,7 @@
 .content-navigation
   border-color: $blue
 "
-          {:syntax :sass :property-syntax :new}))
+          :syntax :sass :property-syntax :new))
       (should=
 ".content-navigation {
   border-color: #3bbfce; }
@@ -106,7 +106,7 @@
 .content-navigation
   :border-color $blue
 "
-          {:syntax :sass :property-syntax :old})))
+          :syntax :sass :property-syntax :old)))
 
     )
   )
