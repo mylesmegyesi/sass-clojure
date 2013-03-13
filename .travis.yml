@@ -3,5 +3,5 @@ language: clojure
 lein: lein2
 
 script:
-  - lein spec
-  - lein with-profile dev uberjar && java -jar target/sass-3.2.6-standalone.jar
+  - lein2 spec
+  - lein2 with-profile dev uberjar && java -jar target/sass-3.2.6-standalone.jar
