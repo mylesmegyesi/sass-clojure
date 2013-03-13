@@ -26,7 +26,7 @@ To render a resource
 (render-resource-path "test.scss")
 
 ; with options
-(render-file-path "test.scss" :load-paths ["src/stylesheets"])
+(render-resource-path "test.scss" :load-paths ["src/stylesheets"])
 ```
 
 Rendering a string
