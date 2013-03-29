@@ -6,14 +6,14 @@
             [chee.coerce :refer [->string ->keyword]]
             [zweikopf.core :refer :all]))
 
+(defn- resource-path [path]
+  (.getPath (resource path)))
+
 (defn- init-sass []
-  (ruby-require (.getPath (resource "sass-3.2.6/lib/sass.rb"))))
+  (ruby-require (resource-path "sass-3.2.6/lib/sass.rb")))
 
 (init-ruby-context)
 (init-sass)
-
-(defn- resource-path [path]
-  (.getPath (resource path)))
 
 (defn- underscore-key [k]
   (->keyword (snake-case (->string k))))
