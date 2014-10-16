@@ -29,10 +29,10 @@
   (call-ruby "Sass::Engine" :for_file (rubyize file-path) (rubyize options)))
 
 (defn render-file-path [file-path & {:as options}]
-  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys (or options {}))) render)))
+  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys (or options {}))) :render)))
 
 (defn render-string [string & {:as options}]
-  (clojurize (call-ruby (new-sass-engine string (underscore-keys (or options {}))) render)))
+  (clojurize (call-ruby (new-sass-engine string (underscore-keys (or options {}))) :render)))
 
 (defn render-resource-path [path & options]
   (apply render-file-path (resource-path path) options))
