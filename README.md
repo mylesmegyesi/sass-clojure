@@ -1,11 +1,7 @@
 Sass
 ==============
 
-Clojure bindings for the Ruby Sass compiler
-
-## WARNING
-
-This should only be used as a development dependency. This library depends on JRuby, which means you would too.
+Clojure wrapper around jsass, which is a Java wrapper around libsass.
 
 ## Installation
 

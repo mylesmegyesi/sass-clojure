@@ -1,39 +1,45 @@
 (ns sass.core
-  (:require [clojure.java.io :refer [resource]]
-            [clojure.string :refer [split]]
-            [clojure.walk :refer [postwalk]]
-            [chee.string :refer [snake-case]]
-            [chee.coerce :refer [->string ->keyword]]
-            [zweikopf.core :refer :all]))
+  (:require [clojure.java.io :refer [file resource]]))
 
-(defn- resource-path [path]
-  (.getPath (resource path)))
+(defn- build-jsass-options [options]
+  (let [jsass-options (io.bit3.jsass.Options.)
+        include-paths (.getIncludePaths jsass-options)]
 
-(defn- init-sass []
-  (ruby-require (resource-path "sass-3.2.6/lib/sass.rb")))
+    (doseq [load-path (:load-paths options)]
+      (.add include-paths (file load-path)))
 
-(init-ruby-context)
-(init-sass)
+    (.setIsIndentedSyntaxSrc jsass-options (= :sass (:syntax options)))
 
-(defn- underscore-key [k]
-  (->keyword (snake-case (->string k))))
+    (case (:style options)
+      :nested
+      (.setOutputStyle jsass-options io.bit3.jsass.OutputStyle/NESTED)
+      :compressed
+      (.setOutputStyle jsass-options io.bit3.jsass.OutputStyle/COMPRESSED)
+      :expanded
+      (.setOutputStyle jsass-options io.bit3.jsass.OutputStyle/EXPANDED)
+      :compact
+      (.setOutputStyle jsass-options io.bit3.jsass.OutputStyle/COMPACT)
+      nil)
 
-(defn- underscore-keys [m]
-  (let [f (fn [[k v]] [(underscore-key k) v])]
-    (postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
-
-(defn- new-sass-engine [template-string options]
-  (call-ruby "Sass::Engine" :new (rubyize template-string) (rubyize options)))
-
-(defn- new-sass-engine-for-file [file-path options]
-  (call-ruby "Sass::Engine" :for_file (rubyize file-path) (rubyize options)))
+    jsass-options))
 
 (defn render-file-path [file-path & {:as options}]
-  (clojurize (call-ruby (new-sass-engine-for-file file-path (underscore-keys (or options {}))) :render)))
+  (let [jsass-options (build-jsass-options options)
+        compiler (io.bit3.jsass.Compiler.)
+        file-uri (.toURI (file file-path))
+        output (.compileFile compiler file-uri nil jsass-options)]
+    (.getCss output)))
 
 (defn render-string [string & {:as options}]
-  (clojurize (call-ruby (new-sass-engine string (underscore-keys (or options {}))) :render)))
+  (let [jsass-options (build-jsass-options options)
+        compiler (io.bit3.jsass.Compiler.)
+        output (.compileString compiler string jsass-options)]
+    (.getCss output)))
 
 (defn render-resource-path [path & options]
-  (apply render-file-path (resource-path path) options))
+  (let [jsass-options (build-jsass-options options)
+        resource-uri (.toURI (resource path))
+        compiler (io.bit3.jsass.Compiler.)
+        output (.compileFile compiler resource-uri nil jsass-options)]
+    (.getCss output)))
 
