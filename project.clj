@@ -3,7 +3,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [io.bit3/jsass "5.3.0"]]
+                 [io.bit3/jsass "5.5.3"]
+                 [org.slf4j/slf4j-log4j12 "1.7.5"]]
+
   :profiles {:dev {:dependencies [[speclj "3.3.2"]]
                    :resource-paths ["test_fixtures"]
                    :main speclj.main}}
