@@ -1,2 +1,3 @@
 {:deps
-  {io.bit3/jsass {:mvn/version "5.5.3"}}}
+  {io.bit3/jsass {:mvn/version "5.5.3"}
+   org.slf4j/slf4j-log4j12 {:mvn/version "1.7.5"}}}
